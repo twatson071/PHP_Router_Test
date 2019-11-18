@@ -4,7 +4,9 @@ class Router
     private $request;
     private $supportedHttpMethods = array(
         "GET",
-        "POST"
+        "POST",
+        "PATCH",
+        "DELETE"
     );
     function __construct(IRequest $request)
     {
@@ -16,7 +18,7 @@ class Router
         if (!in_array(strtoupper($name), $this->supportedHttpMethods)) {
             $this->invalidMethodHandler();
         }
-        // $this->{strtolower($name)}[$this->formatRoute($route)] = $method;
+        $this->{strtolower($name)}[$this->formatRoute($route)] = $method;
     }
     /**
      * Removes trailing forward slashes from the right of the route.
@@ -27,12 +29,6 @@ class Router
         $result = rtrim($route, '/');
         if ($result === '') {
             return '/';
-        }
-        if (basename($result)) {
-            $args = $_SERVER["REQUEST_URI"];
-            $arg_arr = explode("/", $args);
-            $this->request->argId = $arg_arr[2];
-            $result = substr($route, 0, strpos($route, '/', strpos($route, '/')+1));
         }
         return $result;
     }
@@ -49,9 +45,9 @@ class Router
      */
     function resolve()
     {
-        // $methodDictionary = $this->{strtolower($this->request->requestMethod)};
+        $methodDictionary = $this->{strtolower($this->request->requestMethod)};
         $formatedRoute = $this->formatRoute($this->request->requestUri);
-        if (!isset($methodDictionary[$formatedRoute])) {
+        if (is_null($methodDictionary[$formatedRoute])) {
             $this->defaultRequestHandler();
             return;
         }

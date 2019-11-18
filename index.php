@@ -16,15 +16,22 @@ $router->get('/patients', function ($request) {
     $pController = new PatientsController;
     return $pController->index();
 });
-$router->get('/index/{id}', function ($request) {
-    print_r($request);
-    die();
+//TODO: make getting query params dynamic
+$router->get('/patients/2', function ($request) {
+  $pController = new PatientsController;
+  return $pController->get();
 });
-$router->get('/profile', function ($request) {
-    return <<<HTML
-  <h1>Profilee</h1>
-HTML;
+$router->post('/patients', function ($request) {
+  $pController = new PatientsController;
+  return $pController->create($request);
 });
-$router->post('/data', function ($request) {
-    return json_encode($request->getBody());
+$router->patch('/patients/:ID', function ($ID) {
+  print_r($ID);
+  die();
+  $pController = new PatientsController;
+  return $pController->update();
+});
+$router->delete('/patients/2', function ($request) {
+  $pController = new PatientsController;
+  return $pController->delete();
 });
